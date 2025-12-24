@@ -116,7 +116,6 @@ if ok_cmpcap then
   capabilities = cmp_nvim_lsp.default_capabilities()
 end
 
-
 -- Keymaps per LSP buffer
 local on_attach = function(_, bufnr)
   local map = function(mode, lhs, rhs)
