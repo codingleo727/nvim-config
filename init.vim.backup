@@ -1,0 +1,52 @@
+" ===================== Plugins =====================
+" Use a Linux-friendly plug directory (not ~/vimfiles on Windows)
+call plug#begin('~/.vim/plugged')
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'sheerun/vim-polyglot'
+  Plug 'preservim/nerdtree'
+  " Optional linting (can coexist with coc):
+  " Plug 'dense-analysis/ale'
+call plug#end()
+
+" ===================== Basics ======================
+syntax on
+set number
+filetype plugin indent on
+
+" Your existing indentation prefs (global)
+set tabstop=2
+set shiftwidth=4
+set softtabstop=2
+set expandtab
+
+set autoindent
+set smartindent
+set smarttab
+set ruler
+set splitright
+set splitbelow
+set nowrap
+set ignorecase
+set smartcase
+set undofile
+
+" =================== C/C++ settings =================
+" Prefer 4 spaces & C indentation rules in C/C++ buffers only
+augroup cstyle
+  autocmd!
+  autocmd FileType c,cpp setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType c,cpp setlocal cindent
+augroup END
+
+" ----------------- Build / Run ----------------------
+" If a Makefile exists, :make will use it. Otherwise compile current file.
+autocmd FileType c   setlocal makeprg=gcc\ -std=c11\ -Wall\ -Wextra\ -Wpedantic\ -g\ %\ -o\ %:r
+autocmd FileType cpp setlocal makeprg=g++\ -std=c++17\ -Wall\ -Wextra\ -Wpedantic\ -g\ %\ -o\ %:r
+
+nnoremap <F5> :w<CR>:make<CR>
+nnoremap <F6> :copen<CR>
+nnoremap <F9> :!./%:r<CR>
+
+" ----------------- Formatting -----------------------
+" Requires clang-format in WSL: `sudo apt install clang-format`
+nnoremap <leader>f :silent %!clang-format<CR>
