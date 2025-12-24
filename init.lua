@@ -9,7 +9,15 @@ vim.opt.rtp:prepend(lazypath)
 vim.opt.termguicolors = true
 local plugins = {
   -- Treesitter (modern syntax & structure)
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  { "nvim-treesitter/nvim-treesitter",
+    lazy = false,
+    build = ":TSUpdate",
+    main = "nvim-treesitter.configs",
+    opts = {
+      ensure_installed = { "c", "cpp", "lua", "vim", "python" },
+      highlight = { enable = true },
+      indent = { enable = true, disable = {"python"} },
+  }},
 
   -- LSP core + installer
   "neovim/nvim-lspconfig",
@@ -68,40 +76,46 @@ o.undofile     = true
 vim.api.nvim_set_hl(0, "LineNr", { fg = "#f5de9c" })
 vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFFFFF", bold = true })
 
--- ================= Treesitter =================
-require("nvim-treesitter.configs").setup({
-  ensure_installed = { "c", "cpp", "lua", "vim", "python" },
-  highlight = { enable = true },
-  indent    = { enable = true, disable = { "python" } },
-})
-
 -- ================= Completion (nvim-cmp) =================
-local cmp = require("cmp")
-local luasnip = require("luasnip")
-cmp.setup({
-  snippet = { expand = function(args) luasnip.lsp_expand(args.body) end },
-  mapping = cmp.mapping.preset.insert({
-    ["<C-Space>"] = cmp.mapping.complete(),
-    ["<CR>"]      = cmp.mapping.confirm({ select = true }),
-    ["<Tab>"]     = cmp.mapping.select_next_item(),
-    ["<S-Tab>"]   = cmp.mapping.select_prev_item(),
-  }),
-  sources = {
-    { name = "nvim_lsp" },
-    { name = "buffer" },
-    { name = "path" },
-  },
-})
+local ok_cmp, cmp = pcall(require, "cmp")
+local ok_snip, luasnip = pcall(require, "luasnip")
+
+if ok_cmp and ok_snip then
+  cmp.setup({
+    snippet = { expand = function(args) luasnip.lsp_expand(args.body) end },
+    mapping = cmp.mapping.preset.insert({
+      ["<C-Space>"] = cmp.mapping.complete(),
+      ["<CR>"]      = cmp.mapping.confirm({ select = true }),
+      ["<Tab>"]     = cmp.mapping.select_next_item(),
+      ["<S-Tab>"]   = cmp.mapping.select_prev_item(),
+    }),
+    sources = {
+      { name = "nvim_lsp" },
+      { name = "buffer" },
+      { name = "path" },
+    },
+  })
+end
 
 -- ================= LSP (mason + lspconfig) =================
-require("mason").setup()
-require("mason-lspconfig").setup({
-  ensure_installed = { "clangd", "pyright", "lua_ls" },
-  automatic_installation = true,
-})
+local ok_mason, mason = pcall(require, "mason")
+local ok_mlsp, mason_lspconfig = pcall(require, "mason-lspconfig")
+local ok_cmpcap, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 
--- common capabilities (for nvim-cmp)
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+if ok_mason then mason.setup() end
+
+if ok_mlsp then
+  mason_lspconfig.setup({
+    ensure_installed = { "clangd", "pyright", "lua_ls" },
+    automatic_installation = true,
+  })
+end
+
+local capabilities = nil
+if ok_cmpcap then
+  capabilities = cmp_nvim_lsp.default_capabilities()
+end
+
 
 -- Keymaps per LSP buffer
 local on_attach = function(_, bufnr)
@@ -120,11 +134,25 @@ local on_attach = function(_, bufnr)
   map("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end)
 end
 
--- Servers
-vim.lsp.config("clangd", { on_attach = on_attach, capabilities = capabilities, })
-vim.lsp.config("pyright", { on_attach = on_attach, capabilities = capabilities, })
-vim.lsp.config("lua_ls", { on_attach = on_attach, capabilities = capabilities,
-  settings = { Lua = { diagnostics = { globals = {"vim"}, }, }, }, })
+local function setup_server(name, cfg)
+  if vim.lsp and vim.lsp.config and vim.lsp.enable then
+    -- Neovim 0.11+
+    vim.lsp.config(name, cfg)
+    vim.lsp.enable(name)
+  else
+    -- Neovim 0.10 and older (use nvim-lspconfig)
+    local lspconfig = require("lspconfig")
+    lspconfig[name].setup(cfg)
+  end
+end
+
+setup_server("clangd", { on_attach = on_attach, capabilities = capabilities })
+setup_server("pyright", { on_attach = on_attach, capabilities = capabilities })
+setup_server("lua_ls", {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = { Lua = { diagnostics = { globals = { "vim" } } } },
+})
 
 -- ================= pyright settings ===============
 vim.o.updatetime = 250
