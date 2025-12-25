@@ -1,2 +1,1 @@
-As of update, "nvim-treesitter.configs" might be "nvim-treesitter.config". 
-Check .local/share/nvim/lazy/nvim-treesitter/lua to be sure
+As of update, check if you would like the "main" branch of nvim-treesitter or the "master" branch of nvim-treesitter. My current setup uses the "main" branch of nvim-treesitter
