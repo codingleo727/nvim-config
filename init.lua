@@ -9,15 +9,18 @@ vim.opt.rtp:prepend(lazypath)
 vim.opt.termguicolors = true
 local plugins = {
   -- Treesitter (modern syntax & structure)
-  { "nvim-treesitter/nvim-treesitter",
+  {
+    "nvim-treesitter/nvim-treesitter",
     lazy = false,
     build = ":TSUpdate",
-    main = "nvim-treesitter.configs",
-    opts = {
-      ensure_installed = { "c", "cpp", "lua", "vim", "python" },
-      highlight = { enable = true },
-      indent = { enable = true, disable = {"python"} },
-  }},
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "c", "cpp", "lua", "vim", "python" },
+        highlight = { enable = true },
+        indent = { enable = true, disable = { "python" } },
+      })
+    end,
+  },
 
   -- LSP core + installer
   "neovim/nvim-lspconfig",
