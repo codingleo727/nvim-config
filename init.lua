@@ -14,10 +14,12 @@ local plugins = {
     lazy = false,
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "c", "cpp", "lua", "vim", "python" },
-        highlight = { enable = true },
-        indent = { enable = true, disable = { "python" } },
+      require("nvim-treesitter.config").setup()
+
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function()
+          pcall(vim.treesitter.start)
+        end,
       })
     end,
   },
