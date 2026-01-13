@@ -37,7 +37,6 @@ local plugins = {
   "L3MON4D3/LuaSnip",
   "saadparwaiz1/cmp_luasnip",
 
-  -- Your file tree (kept)
   "preservim/nerdtree",
 
   {
@@ -196,7 +195,6 @@ vim.api.nvim_create_autocmd("FileType", {
   command = [[setlocal makeprg=g++\ -std=c++17\ -Wall\ -Wextra\ -Wpedantic\ -g\ %\ -o\ %:r]]
 })
 
--- Keymaps you had
 vim.g.mapleader = " "
 local map = vim.keymap.set
 map("n", "<F5>", ":w<CR>:make<CR>", { silent = true })
@@ -205,5 +203,4 @@ map("n", "<F9>", ":!./%:r<CR>", { silent = false })
 map('t', '<C-w>N', [[<C-\><C-n>]], { noremap = true})
 
 -- ================= Formatting =================
--- keep your clang-format binding; LSP format also available on <leader>lf
 map("n", "<leader>f", [[:silent %!clang-format<CR>]], { silent = true })
