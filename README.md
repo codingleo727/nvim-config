@@ -26,10 +26,12 @@ A performance-oriented Neovim configuration written entirely in **Lua**. Designe
 ```bash
 mv ~/.config/nvim ~/.config/nvim.bak
 mv ~/.local/share/nvim ~/.local/share/nvim.bak
+```
 
 **2. Clone this repository**
 ```bash
 git clone [https://github.com/YOUR_USERNAME/nvim-config.git](https://github.com/codingleo727/nvim-config.git) ~/.config/nvim
+```
 
 **3. Start Neovim**
 Open nvim. The lazy.nvim manager will automatically bootstrap and install all plugins
