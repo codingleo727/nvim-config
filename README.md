@@ -7,20 +7,20 @@ A performance-oriented Neovim configuration written entirely in **Lua**. Designe
 ![Lua](https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white)
 ![Neovim](https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white)
 
-## ⚡ Features
+## Features
 * **Package Management:** Powered by `lazy.nvim` for fast startup times.
 * **LSP Integration:** Full support for C/C++ (`clangd`), Python (`pyright`), and Lua (`lua_ls`) via Mason.
 * **Intelligent Completion:** `nvim-cmp` with snippet support (`LuaSnip`).
 * **Systems Workflow:** Custom compiler bindings for GCC/G++ with strict warning flags (`-Wall -Wextra -Wpedantic`).
 * **Formatting:** Integrated `clang-format` support.
 
-## 🛠 Prerequisites
+## Prerequisites
 * Neovim >= 0.9.0
 * Git
 * A C/C++ Compiler (GCC/Clang)
 * Rippgrep (optional, for grep searching)
 
-## 📦 Installation
+## Installation
 
 **1. Back up your current configuration**
 ```bash
