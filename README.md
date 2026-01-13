@@ -33,5 +33,5 @@ mv ~/.local/share/nvim ~/.local/share/nvim.bak
 git clone [https://github.com/YOUR_USERNAME/nvim-config.git](https://github.com/codingleo727/nvim-config.git) ~/.config/nvim
 ```
 
-**3. Start Neovim**
+**3. Start Neovim** \n
 Open nvim. The lazy.nvim manager will automatically bootstrap and install all plugins
